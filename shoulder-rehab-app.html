@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Shoulder Rehab Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F8F8; --surface:#FFFFFF; --ink:#1C2B33; --muted:#5A6B74; --line:#DCE5E8; --onacc:#FFFFFF;
+  --p1:#3E7C99; --p1bg:#E4F0F5;
+  --p2:#3F7F5E; --p2bg:#E3F1E9;
+  --p3:#A8692A; --p3bg:#F7EBDD;
+  --warn:#9B3B2E; --warnbg:#F8E7E4;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11191D; --surface:#182228; --ink:#E6EEF1; --muted:#9AAAB3; --line:#2A3941; --onacc:#0F1A1F;
+    --p1:#7DB7D1; --p1bg:#1B2E38;
+    --p2:#7CBF9C; --p2bg:#1B3026;
+    --p3:#E0A466; --p3bg:#352A1B;
+    --warn:#E59A8D; --warnbg:#38211D;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11191D; --surface:#182228; --ink:#E6EEF1; --muted:#9AAAB3; --line:#2A3941; --onacc:#0F1A1F;
+  --p1:#7DB7D1; --p1bg:#1B2E38;
+  --p2:#7CBF9C; --p2bg:#1B3026;
+  --p3:#E0A466; --p3bg:#352A1B;
+  --warn:#E59A8D; --warnbg:#38211D;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5;font-size:17px}
+#app{max-width:640px;margin:0 auto;padding:22px 16px 110px}
+h1{font-size:1.65rem;line-height:1.2;margin:0 0 4px}
+h2{font-size:1.2rem;margin:0 0 8px}
+h3{font-size:1.05rem;margin:0}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.ph1{--acc:var(--p1);--accbg:var(--p1bg)}
+.ph2{--acc:var(--p2);--accbg:var(--p2bg)}
+.ph3{--acc:var(--p3);--accbg:var(--p3bg)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.hero{background:var(--accbg);border-left:6px solid var(--acc);border-radius:14px;padding:18px 16px;margin-bottom:14px}
+.chip{display:inline-block;background:var(--accbg);color:var(--ink);border:1px solid var(--acc);border-radius:999px;padding:2px 10px;font-size:.85rem;font-weight:700;margin-bottom:8px}
+.bar{height:12px;background:var(--line);border-radius:6px;overflow:hidden;margin:8px 0 4px}
+.bar>span{display:block;height:100%;background:var(--p2);border-radius:6px;transition:width .3s}
+.btn{display:block;width:100%;min-height:52px;border:0;border-radius:12px;background:var(--acc,var(--p1));color:var(--onacc);font:inherit;font-weight:700;font-size:1.05rem;padding:12px 16px;cursor:pointer;text-align:center;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{min-height:44px;font-size:.95rem;width:auto;display:inline-block}
+.btn:focus-visible,.set:focus-visible,.tab:focus-visible,summary:focus-visible,a:focus-visible,.pill:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.demo{display:inline-block;min-height:44px;line-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid var(--acc);color:var(--ink);font-weight:700;font-size:.95rem;text-decoration:none;margin-right:8px}
+.exhead{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.dose{font-weight:700;font-size:.92rem;color:var(--ink);margin:4px 0 6px}
+.sets{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.set{min-width:78px;min-height:48px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-weight:700;padding:6px 12px;cursor:pointer}
+.set[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.tmr{min-height:44px;border-radius:10px;border:1.5px solid var(--acc);background:transparent;color:var(--ink);font:inherit;font-weight:700;padding:0 14px;cursor:pointer}
+.tmr.run{background:var(--acc);color:var(--onacc)}
+.gate{background:var(--surface);border:1.5px dashed var(--acc);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.95rem}
+.warn{background:var(--warnbg);border-left:4px solid var(--warn);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:.95rem}
+.warn strong{color:var(--warn)}
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.back{min-height:44px;padding:0 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.sticky{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5;border-bottom:1px solid var(--line);margin-bottom:12px}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:10}
+.tab{flex:1;min-height:60px;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;font-size:.95rem;cursor:pointer}
+.tab[aria-current="page"]{color:var(--ink);box-shadow:inset 0 3px 0 var(--p1)}
+details.week{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
+details.week summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;min-height:52px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+details.week summary::-webkit-details-marker{display:none}
+.pills{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 14px}
+.pill{min-height:46px;min-width:64px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.pill.done{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.pill.next{border-color:var(--acc);border-width:2.5px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.row:last-child{border-bottom:0}
+input[type=range]{width:100%;height:36px;accent-color:var(--p1)}
+textarea{width:100%;min-height:90px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:.8rem;padding:10px}
+ul.plain{margin:6px 0 0;padding-left:20px}
+@media (prefers-reduced-motion:reduce){.bar>span{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav class="tabs" id="tabs" aria-label="Main">
+  <button class="tab" data-a="tab" data-v="today">Today</button>
+  <button class="tab" data-a="tab" data-v="plan">Plan</button>
+  <button class="tab" data-a="tab" data-v="progress">Progress</button>
+</nav>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Data ---------- */
+var U={
+  pend:'https://library.theprehabguys.com/vimeo-video/shoulder-pendulum-arom/',
+  sq:'https://us.physitrack.com/home-exercise-video/scapular-retraction',
+  punch:'https://library.theprehabguys.com/vimeo-video/supine-serratus-punch-2/',
+  door:'https://www.physitrack.com/exercise-library/how-to-perform-the-door-stretch-shoulder-exercise',
+  ir:'https://library.theprehabguys.com/vimeo-video/shoulder-internal-rotation-band-2/',
+  wall:'https://us.physitrack.com/home-exercise-video/serratus-wall-slide-with-foam-roller',
+  bandRet:'https://library.theprehabguys.com/vimeo-video/scapula-retraction-band/',
+  proneT:'https://library.theprehabguys.com/vimeo-video/prone-ts/',
+  row:'https://library.theprehabguys.com/vimeo-video/high-row-band/',
+  punchDb:'https://us.physitrack.com/home-exercise-video/serratus-punch-supine-with-dumbbell',
+  ppk:'https://library.theprehabguys.com/vimeo-video/push-up-plus-on-knees/',
+  hk:'https://library.theprehabguys.com/vimeo-video/serratus-anterior-scaption-punch/',
+  pp:'https://library.theprehabguys.com/vimeo-video/the-best-serratus-anterior-exercises-episode-34',
+  ir9090:'https://library.theprehabguys.com/vimeo-video/shoulder-internal-rotation-90-90-band/'
+};
+
+var EX={
+  pendulum:{name:'Pendulum swings',url:U.pend,
+    cue:'Lean on a table with your left hand and let the right arm hang. Sway your body so the arm swings on its own: circles, forward and back, side to side. Keep the shoulder relaxed.',
+    dose:function(w){return{sets:w>=3?3:2,text:'1 min per round',timer:60};}},
+  squeeze:{name:'Shoulder blade squeeze',url:U.sq,
+    cue:'Seated with hands on your hips. Draw your shoulder blades back and down toward your back pockets. Do not shrug.',
+    dose:function(w){return w<=3?{sets:w>=3?3:2,text:'10 reps, hold 5 sec'}:{sets:1,text:'10 reps, hold 5 sec (warm-up)'};}},
+  punchSupine:{name:'Supine serratus punch',url:U.punch,
+    cue:'Lie on your back with the arm pointing at the ceiling. Reach your fist upward so only the shoulder blade lifts off the floor, then lower under control. Keep the elbow straight.',
+    dose:function(w){return{sets:w<=2?2:3,text:'12 reps'};}},
+  doorway:{name:'Doorway chest stretch',url:U.door,
+    cue:'Forearms on the door frame, elbows at or below shoulder height. Step through gently until you feel a mild chest stretch. Stop if you feel sharp pain. Keep your shoulder blades down.',
+    dose:function(w){return{sets:w<=3?3:2,text:'30 sec hold',timer:30};}},
+  irHold:{name:'Internal rotation hold (subscapularis)',url:U.ir,
+    cue:'Band anchored at elbow height, elbow at your side with a small towel roll under the armpit. Pull the hand toward your belly and hold still at about 30% effort.',
+    dose:function(){return{sets:5,text:'10 sec hold, light effort',timer:10};}},
+
+  wallSlide:{name:'Serratus wall slide',url:U.wall,
+    cue:'Forearms on the wall, wrists on a foam roller. Lean in and let the forearms roll up while your upper back stays wide.',
+    dose:function(w){return{sets:w<=4?2:3,text:(w>=7?'12':'10')+' reps'};}},
+  bandRetract:{name:'Band shoulder blade retraction',url:U.bandRet,
+    cue:'Face the band and pull only the shoulder blade back, then let it glide forward under control. Straight arm, no elbow bend.',
+    dose:function(w){return{sets:w<=4?2:3,text:'12 reps'};}},
+  proneT:{name:'Prone T raise (mid trap)',url:U.proneT,from:4,
+    cue:'Face down with arms out in a T, thumbs up. Squeeze the blades together and lift. No weight at first; one arm at a time off the edge of a bed is fine. Do not arch your lower back.',
+    dose:function(w){return{sets:w===4?2:3,text:(w>=7?'10':'8')+' reps, hold 2 sec'};}},
+  highRow:{name:'Band high row',url:U.row,
+    cue:'Elbows out to the sides. Drive them back while squeezing the blades together, as if holding a pencil between them. Keep elbows at or just below shoulder height if the top of the shoulder feels pinchy.',
+    dose:function(w){return{sets:w<=4?2:3,text:(w>=7?'12':'10')+' reps'};}},
+  irBand:{name:'Band internal rotation',url:U.ir,
+    cue:'Elbow at your side with a towel roll under the armpit. Rotate the hand in toward your belly, then control it back out slowly: three seconds each way.',
+    dose:function(w){return{sets:w<=4?2:3,text:'12 reps'};}},
+  punchDb:{name:'Serratus punch with light weight',url:U.punchDb,
+    cue:'Same lying punch as before, now holding a 1–2 kg dumbbell. Only the shoulder blade moves.',
+    dose:function(w){return{sets:w<=4?2:3,text:'12 reps, 1–2 kg'};}},
+  pushPlusKnees:{name:'Push-up plus on knees',url:U.ppk,from:6,
+    cue:'Only do this if pain stays at 2/10 or lower. Keep elbows straight, let the blades come together, then push the floor away and spread them apart.',
+    dose:function(w){return w===6?{sets:2,text:'8 reps'}:w===7?{sets:2,text:'10 reps'}:{sets:3,text:'8 reps'};}},
+
+  hkPunch:{name:'Half-kneeling band serratus punch',url:U.hk,
+    cue:'Half-kneeling with the band anchored. Reach up and out in the scaption plane (about 30° in front of the side) while keeping the shoulder blade controlled.',
+    dose:function(w){return{sets:w===9?2:3,text:'10 reps each side'};}},
+  pushPlusProg:{name:'Push-up plus (incline, then floor)',url:U.pp,
+    cue:'Hands on a raised surface for incline, or on the floor for the full version. At the top, push away to spread the shoulder blades without rounding your back.',
+    dose:function(w){var stage=w>=11?'on the floor':'incline';return{sets:3,text:(w===9||w===11?'8':'10')+' reps, '+stage};}},
+  ir9090:{name:'Internal rotation at 90/90',url:U.ir9090,
+    cue:'Elbow at shoulder height, forearm vertical, band behind you. Rotate the hand down while the elbow stays still. Only if overhead positions are comfortable.',
+    dose:function(w){return{sets:w===9?2:3,text:'10 reps'};}},
+  proneTLoad:{name:'Prone T with light weights',url:U.proneT,
+    cue:'Same prone T, now holding 0.5–2 kg. Increase load only when the last two reps still look clean.',
+    dose:function(w){return{sets:3,text:(w===9?'10':'12')+' reps, hold 2 sec'};}},
+  highRowHeavy:{name:'Band high row (heavier band)',url:U.row,
+    cue:'Same high row with a heavier band. Squeeze the blades together and do not shrug.',
+    dose:function(){return{sets:3,text:'12 reps'};}}
+};
+Object.keys(EX).forEach(function(k){EX[k].id=k;});
+
+var PH_EX={
+  1:['pendulum','squeeze','punchSupine','doorway','irHold'],
+  2:['doorway','squeeze','wallSlide','bandRetract','proneT','highRow','irBand','punchDb','pushPlusKnees'],
+  3:['doorway','hkPunch','pushPlusProg','ir9090','proneTLoad','highRowHeavy']
+};
+var PHASES={
+  1:{name:'Phase 1: Calm and activate',short:'Calm and activate',weeks:'Weeks 1–3'},
+  2:{name:'Phase 2: Build strength',short:'Build strength',weeks:'Weeks 4–8'},
+  3:{name:'Phase 3: Load and return',short:'Load and return',weeks:'Weeks 9–12'}
+};
+var PER_WEEK={1:5,2:4,3:3};
+var WEEK_NOTE={
+  1:'Keep everything light. The goal is to calm the joint, not tire it.',
+  2:'Same effort as last week. Focus on clean shoulder blade movement.',
+  3:'A third set appears on some exercises. Read the Phase 2 checklist before week 4.',
+  4:'Strength phase starts. Two sets on most exercises while your body adjusts.',
+  5:'Third sets arrive. Slow the lowering part of each rep to three seconds.',
+  6:'Push-up plus on knees starts, only if pain stays at 2/10 or lower.',
+  7:'Reps go up on the prone T and wall slides. Keep the shoulder away from your ear.',
+  8:'Last build week. Read the Phase 3 checklist before moving on.',
+  9:'Heavier work starts. Restart any gym pressing at about 50% of your old weights.',
+  10:'If pain-free, move pressing to about 60% of your old weights. Change one thing at a time.',
+  11:'Push-up plus moves to the floor. Pressing at about 70% if pain-free.',
+  12:'Final week. Pressing at about 80%. If everything is pain-free, ask your physio about full return.'
+};
+var GATE={
+  4:'Ready for Phase 2 when daily activities are mostly comfortable, resting pain is 2/10 or less, and you can do the squeezes and punches without shrugging.',
+  9:'Ready for Phase 3 when all Phase 2 exercises are pain-free, you can reach overhead without a pinch, and you can do 3 × 12 rows and prone T with good form.'
+};
+
+function phaseOf(w){return w<=3?1:(w<=8?2:3);}
+var SESSIONS=[];
+(function(){
+  for(var w=1;w<=12;w++){var p=phaseOf(w);
+    for(var n=1;n<=PER_WEEK[p];n++){SESSIONS.push({key:'w'+w+'s'+n,week:w,n:n,phase:p,of:PER_WEEK[p]});}}
+})();
+function sessionByKey(k){for(var i=0;i<SESSIONS.length;i++){if(SESSIONS[i].key===k)return SESSIONS[i];}return null;}
+function exercisesFor(week){
+  return PH_EX[phaseOf(week)].map(function(id){return EX[id];}).filter(function(e){return !e.from||week>=e.from;});
+}
+
+/* ---------- Storage ---------- */
+var KEY='shoulderRehab.v1';
+var storageOK=true;
+var state={done:{},draft:{}};
+function load(){
+  try{
+    localStorage.setItem('__t','1');localStorage.removeItem('__t');
+    var raw=localStorage.getItem(KEY);
+    if(raw){var p=JSON.parse(raw);if(p&&typeof p==='object'){state.done=p.done||{};state.draft=p.draft||{};}}
+  }catch(e){storageOK=false;}
+}
+function save(){
+  if(!storageOK)return;
+  try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){storageOK=false;}
+}
+
+/* ---------- UI state ---------- */
+var ui={tab:'today',open:null,finished:null,pain:0,confirmReset:false,msg:''};
+var timer=null;
+var app=document.getElementById('app');
+var tabs=document.getElementById('tabs');
+
+function nextSession(){for(var i=0;i<SESSIONS.length;i++){if(!state.done[SESSIONS[i].key])return SESSIONS[i];}return null;}
+function doneCount(){return SESSIONS.filter(function(s){return state.done[s.key];}).length;}
+function getDraft(key,exId,n){
+  var d=(state.draft[key]||{})[exId]||[];var out=[];
+  for(var i=0;i<n;i++){out.push(!!d[i]);}
+  return out;
+}
+function draftSets(key){
+  var d=state.draft[key]||{};var c=0;
+  Object.keys(d).forEach(function(k){d[k].forEach(function(v){if(v)c++;});});
+  return c;
+}
+function totalSets(s){return exercisesFor(s.week).reduce(function(a,e){return a+e.dose(s.week).sets;},0);}
+function fmtDate(iso){try{return new Date(iso).toLocaleDateString(undefined,{day:'numeric',month:'short'});}catch(e){return '';}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ---------- Views ---------- */
+function warnStorage(){
+  return storageOK?'':'<div class="warn"><strong>Progress is not being saved.</strong> This browser is blocking storage. Open this page in your normal browser, not a private tab.</div>';
+}
+var PAIN_RULE='<div class="warn"><strong>Pain guide:</strong> keep pain at 3/10 or lower. Stop an exercise if you feel sharp pain on top of the shoulder. Avoid heavy overhead work, dips and cross-body stretches until week 9.</div>';
+
+function home(){
+  var next=nextSession(),n=doneCount(),pct=Math.round(n/SESSIONS.length*100);
+  var h='<h1>Shoulder rehab</h1><p class="muted">Right shoulder · 12-week plan</p>';
+  h+='<div class="card"><div class="exhead"><strong>Overall progress</strong><span class="muted small">'+n+' of '+SESSIONS.length+' sessions</span></div><div class="bar" role="progressbar" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+pct+'%"></span></div></div>';
+  if(!next){
+    h+='<div class="hero ph2"><h2>Plan complete</h2><p>You finished all '+SESSIONS.length+' sessions. Share your progress with your physio and ask about returning to full training.</p></div>';
+    return h;
+  }
+  var done=draftSets(next.key),tot=totalSets(next);
+  h+='<div class="hero ph'+next.phase+'"><span class="chip">'+PHASES[next.phase].weeks+' · '+PHASES[next.phase].short+'</span>';
+  h+='<h2>Week '+next.week+' · Session '+next.n+' of '+next.of+'</h2>';
+  h+='<p>'+WEEK_NOTE[next.week]+'</p>';
+  h+='<ul class="plain">'+exercisesFor(next.week).map(function(e){return '<li>'+e.name+'</li>';}).join('')+'</ul>';
+  h+='<div style="height:14px"></div><button class="btn" data-a="open" data-k="'+next.key+'">'+(done>0?'Continue session ('+done+' of '+tot+' sets done)':'Start session')+'</button></div>';
+
+  h+='<h2 style="margin-top:20px">This week</h2><div class="card ph'+next.phase+'"><div class="pills" style="padding:0">';
+  SESSIONS.filter(function(s){return s.week===next.week;}).forEach(function(s){
+    var d=!!state.done[s.key],isNext=s.key===next.key;
+    h+='<button class="pill'+(d?' done':'')+(isNext?' next':'')+'" data-a="open" data-k="'+s.key+'" aria-label="Week '+s.week+' session '+s.n+(d?' done':'')+'">'+(d?'✓ ':'')+'S'+s.n+'</button>';
+  });
+  h+='</div></div>'+PAIN_RULE;
+  return h;
+}
+
+function planView(){
+  var next=nextSession();var cur=next?next.week:12;
+  var h='<h1>12-week plan</h1><p class="muted">Tap a session to open it. Filled sessions are done.</p>';
+  for(var w=1;w<=12;w++){
+    var p=phaseOf(w),ss=SESSIONS.filter(function(s){return s.week===w;});
+    var dn=ss.filter(function(s){return state.done[s.key];}).length;
+    h+='<details class="week ph'+p+'"'+(w===cur?' open':'')+'><summary><span>Week '+w+' <span class="muted small">· '+PHASES[p].short+'</span></span><span class="muted small">'+dn+'/'+ss.length+'</span></summary>';
+    h+='<div style="padding:0 16px 8px" class="small muted">'+WEEK_NOTE[w]+'</div><div class="pills">';
+    ss.forEach(function(s){
+      var d=!!state.done[s.key],isNext=next&&s.key===next.key;
+      h+='<button class="pill'+(d?' done':'')+(isNext?' next':'')+'" data-a="open" data-k="'+s.key+'">'+(d?'✓ ':'')+'S'+s.n+'</button>';
+    });
+    h+='</div></details>';
+  }
+  return h;
+}
+
+function progressView(){
+  var n=doneCount();
+  var recs=SESSIONS.filter(function(s){return state.done[s.key];}).reverse();
+  var h='<h1>Progress</h1><p class="muted">'+n+' of '+SESSIONS.length+' sessions finished.</p>';
+  h+='<div class="card">';
+  if(!recs.length){h+='<p class="muted" style="margin:0">Nothing saved yet. Finish your first session and it will appear here.</p>';}
+  recs.forEach(function(s){
+    var r=state.done[s.key],d=0,t=0;
+    Object.keys(r.sets||{}).forEach(function(k){d+=r.sets[k].done;t+=r.sets[k].total;});
+    h+='<div class="row"><span>Week '+s.week+' · Session '+s.n+'<br><span class="muted small">'+fmtDate(r.date)+' · '+d+' of '+t+' sets</span></span><span>Pain '+r.pain+'/10</span></div>';
+  });
+  h+='</div>';
+  h+='<div class="card"><h3>Backup</h3><p class="muted small">Your progress is saved on this phone. If you switch phones or clear browser data, copy this code somewhere safe and paste it back here to restore.</p>';
+  h+='<textarea id="bk" readonly aria-label="Backup code">'+esc(JSON.stringify(state))+'</textarea>';
+  h+='<p class="muted small" style="margin-top:12px">Restore from a backup code:</p><textarea id="rs" aria-label="Paste backup code"></textarea>';
+  h+='<div style="height:10px"></div><button class="btn ghost" data-a="restore">Restore progress</button>';
+  if(ui.msg){h+='<p class="small" style="margin-top:10px">'+esc(ui.msg)+'</p>';}
+  h+='</div>';
+  h+='<div class="card"><h3>Start over</h3><p class="muted small">This erases all saved sessions on this phone.</p>';
+  h+='<button class="btn ghost" data-a="reset">'+(ui.confirmReset?'Tap again to erase everything':'Reset progress')+'</button></div>';
+  return h;
+}
+
+function sessionView(key){
+  var s=sessionByKey(key);if(!s)return '';
+  var rec=state.done[key];
+  var h='<div class="ph'+s.phase+'"><div class="topbar"><button class="back" data-a="back">Back</button><div><strong>Week '+s.week+' · Session '+s.n+' of '+s.of+'</strong><br><span class="muted small">'+PHASES[s.phase].short+'</span></div></div>';
+  if(rec){
+    h+='<div class="card"><strong>Finished on '+fmtDate(rec.date)+'</strong><p class="muted" style="margin:4px 0 0">Pain '+rec.pain+'/10</p></div>';
+  } else {
+    var first=(s.week===4||s.week===9)&&s.n===1;
+    if(first){h+='<div class="gate"><strong>Before you start this phase</strong><br>'+GATE[s.week]+'</div>';}
+    h+='<p class="muted">'+WEEK_NOTE[s.week]+'</p>';
+    var tot=totalSets(s),dn=draftSets(key);
+    h+='<div class="sticky"><div class="exhead"><strong>'+dn+' of '+tot+' sets done</strong><span class="muted small">Progress saves as you tap</span></div><div class="bar"><span style="width:'+Math.round(dn/tot*100)+'%"></span></div></div>';
+  }
+  exercisesFor(s.week).forEach(function(e){
+    var d=e.dose(s.week);
+    h+='<div class="card"><h3>'+e.name+'</h3><div class="dose">'+d.sets+' sets · '+d.text+'</div><p class="muted small">'+e.cue+'</p>';
+    if(rec){
+      var r=(rec.sets||{})[e.id];
+      h+='<p style="margin:0"><strong>'+(r?r.done+' of '+r.total+' sets done':'Not logged')+'</strong></p>';
+    } else {
+      var arr=getDraft(key,e.id,d.sets);
+      h+='<div class="sets">';
+      arr.forEach(function(v,i){h+='<button class="set" data-a="set" data-e="'+e.id+'" data-i="'+i+'" aria-pressed="'+v+'">'+(v?'✓ ':'')+'Set '+(i+1)+'</button>';});
+      h+='</div>';
+      if(d.timer){h+='<button class="tmr" data-timer="'+e.id+'" data-secs="'+d.timer+'" data-a="timer" data-e="'+e.id+'">Start '+d.timer+'s timer</button> ';}
+    }
+    h+='<div style="margin-top:10px"><a class="demo" href="'+e.url+'" target="_blank" rel="noopener">Watch demo</a></div></div>';
+  });
+  if(s.phase===3&&!rec){
+    var pct={9:50,10:60,11:70,12:80}[s.week];
+    h+='<div class="gate">Gym return this week: pressing and overhead work at about '+pct+'% of your old weights, only if pain-free.</div>';
+  }
+  if(rec){
+    h+='<button class="btn ghost" data-a="reopen" data-k="'+key+'">Reopen this session</button>';
+  } else {
+    h+=PAIN_RULE;
+    h+='<div class="card"><h3>Finish session</h3><p class="muted small">How did the shoulder feel during this session? 0 is no pain, 10 is the worst.</p>';
+    h+='<input type="range" id="pain" min="0" max="10" step="1" value="'+ui.pain+'" aria-label="Pain score"><div class="exhead"><span class="muted small">0</span><strong id="painv">'+ui.pain+'/10</strong><span class="muted small">10</span></div>';
+    h+='<div style="height:12px"></div><button class="btn" data-a="finish" data-k="'+key+'">Save session</button><p class="muted small" style="margin:10px 0 0">Unfinished sets are fine. They are saved as you did them.</p></div>';
+  }
+  h+='</div>';
+  return h;
+}
+
+function doneView(){
+  var f=ui.finished,s=sessionByKey(f.key),next=nextSession();
+  var h='<div class="hero ph'+(s?s.phase:1)+'" style="margin-top:20px"><h2>Session saved</h2><p>Week '+s.week+' · Session '+s.n+' is complete. '+f.done+' of '+f.total+' sets logged, pain '+f.pain+'/10.</p></div>';
+  if(f.pain>=4){h+='<div class="warn"><strong>Pain was above the 3/10 guide.</strong> Next time use a lighter band or fewer reps. If it stays high for two sessions, check with your physio.</div>';}
+  if(next){h+='<div class="card"><strong>Next up</strong><p style="margin:4px 0 0">Week '+next.week+' · Session '+next.n+'. Open the app any time and it will start there.</p></div>';}
+  else{h+='<div class="card"><strong>That was the last session.</strong><p style="margin:4px 0 0">Ask your physio about returning to full training.</p></div>';}
+  h+='<button class="btn" data-a="home">Back to today</button>';
+  return h;
+}
+
+/* ---------- Render ---------- */
+function render(keepScroll){
+  var y=window.scrollY;
+  var html;
+  if(ui.finished){html=doneView();}
+  else if(ui.open){html=sessionView(ui.open);}
+  else if(ui.tab==='plan'){html=planView();}
+  else if(ui.tab==='progress'){html=progressView();}
+  else{html=home();}
+  app.innerHTML=warnStorage()+html;
+  tabs.style.display=(ui.open||ui.finished)?'none':'flex';
+  Array.prototype.forEach.call(tabs.querySelectorAll('.tab'),function(b){
+    if(b.dataset.v===ui.tab){b.setAttribute('aria-current','page');}else{b.removeAttribute('aria-current');}
+  });
+  paintTimer();
+  window.scrollTo(0,keepScroll?y:0);
+}
+
+/* ---------- Timer ---------- */
+function paintTimer(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-timer]'),function(b){
+    var id=b.dataset.timer,secs=b.dataset.secs;
+    if(timer&&timer.ex===id){b.textContent='Stop · '+timer.left+'s';b.classList.add('run');}
+    else{b.textContent='Start '+secs+'s timer';b.classList.remove('run');}
+  });
+}
+function stopTimer(){if(timer){clearInterval(timer.h);timer=null;}}
+function startTimer(exId,secs){
+  stopTimer();
+  var end=Date.now()+secs*1000;
+  timer={ex:exId,left:secs,end:end,key:ui.open};
+  timer.h=setInterval(function(){
+    if(!timer)return;
+    timer.left=Math.max(0,Math.ceil((timer.end-Date.now())/1000));
+    if(timer.left<=0){
+      var t=timer;stopTimer();
+      try{if(navigator.vibrate){navigator.vibrate([200,100,200]);}}catch(e){}
+      tickNext(t.key,t.ex);
+    } else {paintTimer();}
+  },250);
+  paintTimer();
+}
+function tickNext(key,exId){
+  var s=sessionByKey(key);if(!s||state.done[key])return;
+  var d=EX[exId].dose(s.week);
+  var arr=getDraft(key,exId,d.sets);
+  var i=arr.indexOf(false);
+  if(i>-1){arr[i]=true;setDraft(key,exId,arr);save();}
+  if(ui.open===key){render(true);}
+}
+function setDraft(key,exId,arr){
+  if(!state.draft[key]){state.draft[key]={};}
+  state.draft[key][exId]=arr;
+}
+
+/* ---------- Actions ---------- */
+app.addEventListener('click',function(e){
+  var t=e.target.closest('[data-a]');if(!t)return;
+  var a=t.dataset.a;
+  if(a==='open'){stopTimer();ui.open=t.dataset.k;ui.pain=0;render();}
+  else if(a==='back'){stopTimer();ui.open=null;render();}
+  else if(a==='home'){ui.finished=null;ui.open=null;ui.tab='today';render();}
+  else if(a==='set'){
+    var key=ui.open,s=sessionByKey(key),ex=EX[t.dataset.e],d=ex.dose(s.week);
+    var arr=getDraft(key,ex.id,d.sets),i=parseInt(t.dataset.i,10);
+    arr[i]=!arr[i];setDraft(key,ex.id,arr);save();render(true);
+  }
+  else if(a==='timer'){
+    var exId=t.dataset.e;
+    if(timer&&timer.ex===exId){stopTimer();paintTimer();}
+    else{startTimer(exId,parseInt(t.dataset.secs,10));}
+  }
+  else if(a==='finish'){
+    stopTimer();
+    var k=t.dataset.k,ss=sessionByKey(k),rec={date:new Date().toISOString(),pain:ui.pain,sets:{}},dn=0,tt=0;
+    exercisesFor(ss.week).forEach(function(x){
+      var dz=x.dose(ss.week),arr2=getDraft(k,x.id,dz.sets),c=arr2.filter(Boolean).length;
+      rec.sets[x.id]={done:c,total:dz.sets,text:dz.text};dn+=c;tt+=dz.sets;
+    });
+    state.done[k]=rec;delete state.draft[k];save();
+    ui.finished={key:k,done:dn,total:tt,pain:ui.pain};ui.open=null;render();
+  }
+  else if(a==='reopen'){
+    var k2=t.dataset.k;delete state.done[k2];save();render(true);
+  }
+  else if(a==='restore'){
+    var v=(document.getElementById('rs')||{}).value||'';
+    try{
+      var p=JSON.parse(v);
+      if(!p||typeof p.done!=='object'){throw new Error('bad');}
+      state.done=p.done||{};state.draft=p.draft||{};save();ui.msg='Progress restored.';
+    }catch(err){ui.msg='That code could not be read. Copy the whole backup code and try again.';}
+    render(true);
+  }
+  else if(a==='reset'){
+    if(ui.confirmReset){state={done:{},draft:{}};save();ui.confirmReset=false;ui.msg='Progress erased.';}
+    else{ui.confirmReset=true;}
+    render(true);
+  }
+});
+tabs.addEventListener('click',function(e){
+  var t=e.target.closest('[data-a="tab"]');if(!t)return;
+  ui.tab=t.dataset.v;ui.confirmReset=false;ui.msg='';render();
+});
+app.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='pain'){
+    ui.pain=parseInt(e.target.value,10)||0;
+    var pv=document.getElementById('painv');if(pv){pv.textContent=ui.pain+'/10';}
+  }
+});
+
+load();
+render();
+})();
+</script>
+</body>
+</html>
